@@ -1,6 +1,8 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use crate::models::{CardProviderRange, Transaction};
+use std::fs::OpenOptions;
+use std::io::Write;
 
 pub struct App {
     pub card_provider_ranges: Vec<CardProviderRange>,
@@ -68,5 +70,29 @@ impl App {
 
     pub fn add_transaction(&mut self, transaction: Transaction) {
         self.transactions.push(transaction);
+    }
+
+    pub fn save_transactions(&self) -> Result<(), std::io::Error> {
+
+        let mut file = OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("transactions.txt")?;
+
+        let euros = tx.sum / 100;
+        let cents = tx.sum % 100;
+
+        for tx in &self.transactions {
+            writeln!(
+                file,
+                "{};{};{}.{:02};",
+                tx.card_number,
+                tx.card_provider,
+                euros,
+                cents
+            )?;
+        }
+
+        Ok(())
     }
 }
