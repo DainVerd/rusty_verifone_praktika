@@ -79,10 +79,11 @@ impl App {
             .append(true)
             .open("transactions.txt")?;
 
-        let euros = tx.sum / 100;
-        let cents = tx.sum % 100;
+
 
         for tx in &self.transactions {
+            let euros = tx.sum / 100;
+            let cents = tx.sum % 100;
             writeln!(
                 file,
                 "{};{};{}.{:02};",
